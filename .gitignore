@@ -1,0 +1,22 @@
+# 依赖与构建产物
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# 本地密钥：绝对不要提交
+.env
+.env.local
+.env.*.local
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# 编辑器
+.vscode/*
+!.vscode/extensions.json
+.idea/

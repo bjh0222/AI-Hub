@@ -1,0 +1,385 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   1. 设计令牌（唯一真源）
+   来源：docs/设计系统.md §1.7。所有色值都按 WCAG 相对亮度实算过，
+   改任何一个都要重跑设计系统 §11 的对比度自检脚本。
+   ========================================================================== */
+:root {
+  /* ---- 背景层 ---- */
+  --bg-page: #0b0e14;
+  --surface-1: #141922;
+  --surface-1-hover: #1b2230;
+  --surface-2: #1b2230;
+  --surface-inset: #0e1219;
+
+  /* ---- 边框 ---- */
+  --border-subtle: #232b3a; /* 装帧用，豁免 WCAG 1.4.11 */
+  --border-strong: #58677d; /* 3.36:1(页面) / 3.06:1(卡片) —— 控件轮廓 */
+  --border-hover: #65769a; /* 4.24:1(页面) / 3.87:1(卡片) —— 悬停标识 */
+  --border-accent: #2563eb; /* 3.41:1(卡片上) —— 选中态 */
+
+  /* ---- 文本三级 ---- */
+  --text-1: #f2f6fc;
+  --text-2: #a9b4c6;
+  --text-3: #8a97ad;
+  --text-disabled: #5a6478;
+  --text-on-accent: #ffffff;
+
+  /* ---- 主强调色 ---- */
+  --accent-400: #7bb4ff;
+  --accent-500: #4d9bff;
+  --accent-600: #2563eb;
+  --accent-tint: #1c2b41;
+  --focus-ring: #4d9bff;
+
+  /* ---- 语义色 ---- */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --star-tint: #3e3722;
+
+  /* ---- 平台识别色（近似示意值，不是官方规范）---- */
+  --brand-openai: #2dd4a7;
+  --fill-openai: #0b6b54;
+  --brand-deepseek: #7ba6ff;
+  --fill-deepseek: #2563eb;
+  --brand-gemini: #8ab4f8;
+  --fill-gemini: #1a73e8;
+  --brand-qwen: #a78bfa;
+  --fill-qwen: #7c3aed;
+  --brand-kimi: #c4b5fd;
+  --fill-kimi: #7c3aed;
+  --brand-zhipu: #6b96ff;
+  --fill-zhipu: #3b5bdb;
+  --brand-doubao: #8ca8ff;
+  --fill-doubao: #3556d6;
+  --brand-grok: #A78BFA; 
+  --fill-grok: #6D28D9;
+
+  /* ---- 圆角 / 阴影 / 发光 / 毛玻璃 ---- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  /* 提示词边栏（≥lg docked）让位宽度；<lg 时边栏是弹层，宽度为 0 */
+  --sidebar-w: 0px;
+
+  /* 输入框聚焦光晕（与 :focus-visible 的 outline 叠加是刻意的） */
+  --focus-halo: rgb(77 155 255 / 0.15);
+
+  /* 遮罩统一值（Dialog / 移动端弹层共用） */
+  --overlay-bg: rgb(0 0 0 / 0.55);
+
+  --shadow-1: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-2: 0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.35);
+  --shadow-3: 0 16px 40px -8px rgb(0 0 0 / 0.62), 0 4px 12px -4px rgb(0 0 0 / 0.45);
+
+  --glow-1: 0 0 0 1px rgb(77 155 255 / 0.2), 0 0 12px -2px rgb(77 155 255 / 0.2);
+  --glow-2: 0 0 0 1px rgb(77 155 255 / 0.35), 0 0 22px -2px rgb(77 155 255 / 0.32);
+  --glow-3: 0 0 0 1px rgb(77 155 255 / 0.55), 0 0 34px -4px rgb(77 155 255 / 0.48),
+    0 0 68px -12px rgb(77 155 255 / 0.3);
+
+  --glass-bg: rgb(27 34 48 / 0.72);
+  --glass-bg-solid: #1b2230;
+  --glass-blur: 16px;
+  --glass-saturate: 140%;
+
+  /* ---- 动效 ---- */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* ---- 字体 ---- */
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei',
+    'PingFang SC', 'Hiragino Sans GB', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Cascadia Mono', 'Consolas', 'SFMono-Regular', 'JetBrains Mono', ui-monospace,
+    'Courier New', monospace;
+
+  /* ---- 栅格 ---- */
+  --container-max: 1400px;
+  --grid-gap: 12px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --grid-gap: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root {
+    --grid-gap: 20px;
+  }
+}
+
+/* 提示词边栏（≥lg docked）展开时，主内容与底部操作栏让出它的宽度 */
+@media (min-width: 1024px) {
+  [data-sidebar-open='true'] {
+    --sidebar-w: 320px;
+  }
+}
+
+/* 平台色统一从 data-brand 取，组件里只写 data-brand 与内联 tintHex */
+[data-brand='openai'] {
+  --brand: var(--brand-openai);
+  --fill: var(--fill-openai);
+}
+[data-brand='deepseek'] {
+  --brand: var(--brand-deepseek);
+  --fill: var(--fill-deepseek);
+}
+[data-brand='gemini'] {
+  --brand: var(--brand-gemini);
+  --fill: var(--fill-gemini);
+}
+[data-brand='qwen'] {
+  --brand: var(--brand-qwen);
+  --fill: var(--fill-qwen);
+}
+[data-brand='kimi'] {
+  --brand: var(--brand-kimi);
+  --fill: var(--fill-kimi);
+}
+[data-brand='zhipu'] {
+  --brand: var(--brand-zhipu);
+  --fill: var(--fill-zhipu);
+}
+[data-brand='doubao'] {
+  --brand: var(--brand-doubao);
+  --fill: var(--fill-doubao);
+}
+[data-brand='grok'] {
+  --brand: var(--brand-grok);
+  --fill: var(--fill-grok);
+}
+
+/* ==========================================================================
+   2. 基础层
+   ========================================================================== */
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: 'tnum' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* 页面氛围：两枚固定光源，不参与交互、不参与动画 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(900px 520px at 10% -12%, rgb(37 99 235 / 0.18), transparent 62%),
+      radial-gradient(720px 440px at 94% -4%, rgb(20 184 166 / 0.12), transparent 64%);
+  }
+
+  ::selection {
+    background: rgb(77 155 255 / 0.32);
+    color: var(--text-1);
+  }
+
+  /* 焦点环：全站统一，键盘可见、鼠标点击不打扰 */
+  :focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #2a3444 transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #2a3444;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a4759;
+    background-clip: content-box;
+  }
+}
+
+/* ==========================================================================
+   3. 组件层
+   ========================================================================== */
+@layer components {
+  /* --- 卡片：不上毛玻璃，同屏多张 backdrop-filter 会掉帧 --- */
+  .card {
+    @apply relative rounded-lg border border-border-subtle bg-surface-1 shadow-1;
+    transition:
+      background-color 150ms var(--ease-standard),
+      border-color 150ms var(--ease-standard),
+      box-shadow 150ms var(--ease-standard),
+      transform 150ms var(--ease-standard);
+  }
+
+  /* hover 浮起语言：-1px + shadow-2，最小幅度（不加 scale、不加 glow） */
+  .card:hover {
+    @apply border-border-hover bg-surface-1-hover;
+    box-shadow: var(--shadow-2);
+    transform: translateY(-1px);
+  }
+
+  /* 勾选多开的反馈：glow-1 是最低档发光（卡片禁用 glow-2/3） */
+  .card[data-selected='true'] {
+    @apply border-border-accent bg-accent-tint;
+    box-shadow: var(--glow-1);
+  }
+
+  /* --- 按钮 --- */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-md border border-border-strong bg-surface-2 px-3 py-2 text-sm font-medium text-fg-1;
+    transition:
+      background-color 150ms var(--ease-standard),
+      border-color 150ms var(--ease-standard),
+      color 150ms var(--ease-standard);
+  }
+
+  .btn:hover:not(:disabled) {
+    @apply border-border-hover bg-surface-1-hover;
+  }
+
+  .btn:disabled {
+    @apply cursor-not-allowed text-fg-disabled;
+  }
+
+  .btn-primary {
+    @apply border-transparent bg-accent-600 text-on-accent;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    @apply border-transparent bg-accent-500 text-on-accent;
+  }
+
+  .btn-ghost {
+    @apply border-transparent bg-transparent text-fg-2;
+  }
+
+  .btn-ghost:hover:not(:disabled) {
+    @apply border-transparent bg-surface-2 text-fg-1;
+  }
+
+  .icon-btn {
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-transparent text-fg-2;
+    transition:
+      background-color 150ms var(--ease-standard),
+      color 150ms var(--ease-standard);
+  }
+
+  .icon-btn:hover {
+    @apply bg-surface-2 text-fg-1;
+  }
+
+  /* --- 搜索框 --- */
+  .input {
+    @apply w-full rounded-md border border-border-strong bg-surface-inset px-3 py-2 text-sm text-fg-1;
+  }
+
+  .input::placeholder {
+    color: var(--text-3);
+  }
+
+  .input:focus {
+    @apply border-border-accent;
+    /* 聚焦光晕：与全局 :focus-visible 的 outline 叠加是刻意的（halo=被聚焦，outline=键盘可达） */
+    box-shadow: 0 0 0 3px var(--focus-halo);
+  }
+
+  /* --- 标签 / 徽标 / 快捷键 --- */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-border-subtle bg-surface-2 px-2.5 py-1 text-xs text-fg-2;
+    transition:
+      background-color 150ms var(--ease-standard),
+      border-color 150ms var(--ease-standard),
+      color 150ms var(--ease-standard);
+  }
+
+  .chip:hover {
+    @apply border-border-hover text-fg-1;
+  }
+
+  .chip[aria-pressed='true'] {
+    @apply border-border-accent bg-accent-tint text-fg-1;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-sm bg-surface-inset px-1.5 py-0.5 text-[11px] tabular-nums text-fg-3;
+  }
+
+  /* 强调徽标（如「已打开 N 次」）：#4D9BFF on #1C2B41 = 5.06:1 ✓ */
+  .badge-accent {
+    @apply bg-accent-tint text-accent-500;
+  }
+
+  .kbd {
+    @apply inline-flex min-w-[1.5rem] items-center justify-center rounded-sm border border-border-strong bg-surface-inset px-1 py-0.5 font-mono text-[11px] font-medium text-fg-2;
+  }
+
+  /* --- 面板 / 浮层 --- */
+  .panel {
+    @apply rounded-lg border border-border-subtle bg-surface-2 shadow-3;
+  }
+
+  .section-title {
+    @apply text-xs font-medium uppercase tracking-wide text-fg-3;
+  }
+}
+
+/* ==========================================================================
+   4. 毛玻璃（严格限定：顶栏 / Toast / 底部操作栏，同屏 ≤2 个）
+      提示词边栏是贴边不透明面板（bg-surface-1），不占用毛玻璃预算。
+   ========================================================================== */
+.glass {
+  background: var(--glass-bg-solid);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  }
+}
+
+/* ==========================================================================
+   5. 动效降级
+   注意：不是把所有时长压成 0.01ms —— 那样只是让位移变快，前庭敏感用户依然难受。
+   正确做法是把 transform 从 transition-property 中移除。
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-property: color, background-color, border-color, opacity !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
